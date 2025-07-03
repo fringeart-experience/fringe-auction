@@ -1,249 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fringe Auction</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fringe Auction</title>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      font-size: 20px;
-    }
-    h1 {
-      color: #085651;
-      font-size: 26px;
-      text-align: center;
-      margin-bottom: 5px;
-      margin-top: 35px;
-    }
-    #status {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #C26363;
-      background-color: #FFF3CD;
-      padding: 10px;
-      border-radius: 5px;
-      display: none; /* hide when empty */
-    }
-    form {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-    input, button {
-      padding: 8px;
-      margin: 5px 0;
-      width: 100%;
-      box-sizing: border-box;
-      font-size: 20px;
-    }
-    button {
-      background: #085651;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover { background: #555; }
-    .subtitle {
-      font-size: 16px;
-      text-align: center;
-      margin-top: 2px;
-      margin-bottom: 5px;
-    }
-    .current-leader-display {
-      color: #C26363;
-      font-weight: bold;
-    }
-    .note {
-      font-size: 16px;
-      color: #555;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-  </style>
+<style>
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  font-size: 20px;
+}
+h1 {
+  color: #085651;
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 5px;
+  margin-top: 35px;
+}
+#status {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #C26363;
+  background-color: #FFF3CD;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+}
+form {
+  margin-top: 20px;
+  font-size: 18px;
+}
+input, button {
+  padding: 8px;
+  margin: 5px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 20px;
+}
+button {
+  background: #085651;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover { background: #555; }
+.subtitle {
+  font-size: 16px;
+  text-align: center;
+  margin-top: 2px;
+  margin-bottom: 5px;
+}
+.current-leader-display {
+  color: #C26363;
+  font-weight: bold;
+}
+.note {
+  font-size: 16px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 10px;
+}
+</style>
 </head>
 
 <body>
-  <h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
-  <p class="subtitle"><em>In support of Fringe: An Art Experience in downtown Ruston.</em></p>
+<h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
+<p class="subtitle"><em>In support of Fringe: An Art Experience in downtown Ruston.</em></p>
 
-  <p id="countdown" style="text-align:center; font-weight:bold; color:#C26363; font-size:20px;">
-    Auction begins in: Loading...
-  </p>
+<p id="countdown" style="text-align:center; font-weight:bold; color:#C26363; font-size:20px;">
+  Auction begins in: Loading...
+</p>
 
-  <p class="current-leader-display" id="currentLeaderContainer">
-    Current Leader: <span id="currentLeader">Loading...</span> with a bid of $<span id="currentBid">Loading...</span>
-  </p>
+<p class="current-leader-display" id="currentLeaderContainer">
+  Current Leader: <span id="currentLeader">Loading...</span> with a bid of $<span id="currentBid">Loading...</span>
+</p>
 
-  <form id="bidForm">
-    <label><strong>Bidder Name:</strong><br />
-      <input type="text" id="bidderName" required />
-    </label><br />
-    <label><em>Your name will not be released to the public unless permitted.</em></label><br /><br />
+<form id="bidForm">
+  <label><strong>Bidder Name:</strong><br />
+    <input type="text" id="bidderName" required />
+  </label><br />
+  <label><em>Your name will not be released to the public unless permitted.</em></label><br /><br />
 
-    <label><strong>Bidding Nickname</strong> (optional):<br />
-      <input type="text" id="bidderNickname" />
-    </label><br />
-    <label><em>Nicknames will be displayed next to the current highest bid.</em></label><br /><br />
+  <label><strong>Bidding Nickname</strong> (optional):<br />
+    <input type="text" id="bidderNickname" />
+  </label><br />
+  <label><em>Nicknames will be displayed next to the current highest bid.</em></label><br /><br />
 
-    <label><strong>Bidder Email:</strong><br />
-      <input type="email" id="bidderEmail" required />
-    </label><br />
-    <label><em>Email addresses are only used to contact the bidders about the Auction.</em></label><br /><br />
+  <label><strong>Bidder Email:</strong><br />
+    <input type="email" id="bidderEmail" required />
+  </label><br />
+  <label><em>Email addresses are only used to contact the bidders about the Auction.</em></label><br /><br />
 
-    <label><strong>Bid Amount:</strong></label><br />
-    <span style="display: inline-flex; align-items: center; width: 100%;">
-      <span><strong>$</strong>&nbsp;</span>
-      <input type="number" id="bidAmount" required min="100" step="10" style="flex: 1;" />
-    </span><br />
-    <div id="suggestedBidNote" class="note"></div><br />
+  <label><strong>Bid Amount:</strong></label><br />
+  <span style="display: inline-flex; align-items: center; width: 100%;">
+    <span><strong>$</strong>&nbsp;</span>
+    <input type="number" id="bidAmount" required min="100" step="10" style="flex: 1;" />
+  </span><br />
+  <div id="suggestedBidNote" class="note"></div><br />
 
-    <button type="submit">Place Bid</button>
-  </form>
+  <button type="submit">Place Bid</button>
+</form>
 
-  <p id="status"></p>
+<p id="status"></p>
 
 <script>
-  const auctionStart = new Date("July 1, 2025 09:00:00");
-  const auctionEnd = new Date("July 31, 2025 21:00:00");
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
+  authDomain: "auctions-fringe12.firebaseapp.com",
+  projectId: "auctions-fringe12",
+  storageBucket: "auctions-fringe12.firebasestorage.app",
+  messagingSenderId: "534345798049",
+  appId: "1:534345798049:web:4d71d0f4a6c18782847be0",
+  measurementId: "G-4ZB48GFTNN",
+  databaseURL: "https://auctions-fringe12-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const artworkRef = database.ref('fringeAuction/artwork1');
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
-    authDomain: "auctions-fringe12.firebaseapp.com",
-    projectId: "auctions-fringe12",
-    storageBucket: "auctions-fringe12.firebasestorage.app",
-    messagingSenderId: "534345798049",
-    appId: "1:534345798049:web:4d71d0f4a6c18782847be0",
-    measurementId: "G-4ZB48GFTNN",
-    databaseURL: "https://auctions-fringe12-default-rtdb.firebaseio.com"
-  };
+const currentBidElement = document.getElementById('currentBid');
+const currentLeaderElement = document.getElementById('currentLeader');
+const bidForm = document.getElementById('bidForm');
+const status = document.getElementById('status');
+const countdownElement = document.getElementById('countdown');
+const leaderContainer = document.getElementById('currentLeaderContainer');
+const bidAmountInput = document.getElementById('bidAmount');
+const suggestedBidNote = document.getElementById('suggestedBidNote');
 
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const artworkRef = database.ref('fringeAuction/artwork1');
+const auctionStart = new Date("July 1, 2025 09:00:00");
+const auctionEnd = new Date("July 31, 2025 21:00:00");
+const minBid = 100;
+const bidIncrement = 10;
 
-  const currentBidElement = document.getElementById('currentBid');
-  const currentLeaderElement = document.getElementById('currentLeader');
-  const bidForm = document.getElementById('bidForm');
-  const status = document.getElementById('status');
-  const countdownElement = document.getElementById('countdown');
-  const leaderContainer = document.getElementById('currentLeaderContainer');
-  const bidAmountInput = document.getElementById('bidAmount');
-  const suggestedBidNote = document.getElementById('suggestedBidNote');
+function updateCountdown(now) {
+  let distance, message;
 
-  const minBid = 100;
-  const bidIncrement = 10;
+  if (now < auctionStart) {
+    distance = auctionStart - now;
+    message = "Auction begins in:";
+  } else if (now >= auctionStart && now <= auctionEnd) {
+    distance = auctionEnd - now;
+    message = "Auction ends in:";
+  } else {
+    distance = 0;
+    message = "Auction ended.";
+  }
 
-  function updateCountdown() {
-    const now = new Date();
-    let distance, message;
+  if (distance > 0) {
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    countdownElement.textContent = `${message} ${days}d ${hours}h ${minutes}m ${seconds}s`;
 
     if (now < auctionStart) {
-      distance = auctionStart - now;
-      message = "Auction begins in:";
-    } else if (now >= auctionStart && now <= auctionEnd) {
-      distance = auctionEnd - now;
-      message = "Auction ends in:";
-    } else {
-      distance = 0;
-      message = "Auction ended.";
-    }
-
-    if (distance > 0) {
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      countdownElement.textContent = `${message} ${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-      if (now < auctionStart) {
-        bidForm.style.display = "none";
-        leaderContainer.style.display = "none";
-        status.style.display = "block";
-        status.innerHTML = "<div style='text-align:center;'>⏳ The auction has not started yet.<br>Please check back soon to place your bid!</div>";
-      } else {
-        bidForm.style.display = "block";
-        leaderContainer.style.display = "block";
-        status.style.display = "none";
-      }
-    } else {
-      countdownElement.textContent = message;
       bidForm.style.display = "none";
       leaderContainer.style.display = "none";
       status.style.display = "block";
-      status.textContent = "❌ This auction has ended. Thank you for your interest!";
+      status.innerHTML = "<div style='text-align:center;'>⏳ The auction has not started yet.<br>Please check back soon to place your bid!</div>";
+    } else {
+      bidForm.style.display = "block";
+      leaderContainer.style.display = "block";
+      status.style.display = "none";
     }
+  } else {
+    countdownElement.textContent = message;
+    bidForm.style.display = "none";
+    leaderContainer.style.display = "none";
+    status.style.display = "block";
+    status.textContent = "❌ This auction has ended. Thank you for your interest!";
   }
+}
 
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
+setInterval(() => updateCountdown(new Date()), 1000);
 
-  // Ensure suggested bid shows correctly when auction is live
-  artworkRef.on('value', (snapshot) => {
+artworkRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  const currentBid = data ? parseFloat(data.currentBid) : 0;
+  const currentNickname = data && data.bidderNickname ? data.bidderNickname : 'No bids yet';
+
+  currentBidElement.textContent = currentBid || '0';
+  currentLeaderElement.textContent = currentNickname;
+
+  const now = new Date();
+  if (now >= auctionStart && now <= auctionEnd) {
+    const suggestedBid = Math.max(currentBid + bidIncrement, minBid);
+    bidAmountInput.value = suggestedBid;
+    suggestedBidNote.textContent = `Suggested minimum bid: $${suggestedBid}`;
+  } else {
+    bidAmountInput.value = "";
+    suggestedBidNote.textContent = "";
+  }
+});
+
+bidForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const bidderName = document.getElementById('bidderName').value;
+  const bidderEmail = document.getElementById('bidderEmail').value;
+  const bidderNickname = document.getElementById('bidderNickname').value || "Anonymous";
+  const bidAmount = parseFloat(bidAmountInput.value);
+
+  artworkRef.once('value').then((snapshot) => {
     const data = snapshot.val();
     const currentBid = data ? parseFloat(data.currentBid) : 0;
-    currentBidElement.textContent = currentBid || '0';
-    currentLeaderElement.textContent = data && data.bidderNickname ? data.bidderNickname : 'No bids yet';
 
-    const now = new Date();
-    if (now >= auctionStart && now <= auctionEnd) {
-      const suggestedBid = Math.max(currentBid + bidIncrement, minBid);
-      bidAmountInput.value = suggestedBid;
-      suggestedBidNote.textContent = `Suggested minimum bid: $${suggestedBid}`;
+    if (bidAmount > currentBid && bidAmount >= minBid) {
+      artworkRef.update({
+        currentBid: bidAmount,
+        bidderName: bidderName,
+        bidderNickname: bidderNickname,
+        bidderEmail: bidderEmail
+      });
+
+      const bidsRef = database.ref('fringeAuction/artwork1/bids');
+      bidsRef.push({
+        bidAmount: bidAmount,
+        bidderName: bidderName,
+        bidderNickname: bidderNickname,
+        bidderEmail: bidderEmail,
+        timestamp: Date.now()
+      });
+
+      status.style.display = "block";
+      status.textContent = "✅ Bid placed successfully!";
+      bidForm.reset();
+    } else if (bidAmount < minBid) {
+      status.style.display = "block";
+      status.textContent = `⚠️ Bid must be at least $${minBid}.`;
     } else {
-      bidAmountInput.value = "";
-      suggestedBidNote.textContent = "";
+      status.style.display = "block";
+      status.textContent = "⚠️ Bid must be higher than the current bid.";
     }
   });
-
-  bidForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const bidderName = document.getElementById('bidderName').value;
-    const bidderEmail = document.getElementById('bidderEmail').value;
-    const bidderNickname = document.getElementById('bidderNickname').value || "Anonymous";
-    const bidAmount = parseFloat(bidAmountInput.value);
-
-    artworkRef.once('value').then((snapshot) => {
-      const data = snapshot.val();
-      const currentBid = data ? parseFloat(data.currentBid) : 0;
-
-      if (bidAmount > currentBid && bidAmount >= minBid) {
-        artworkRef.update({
-          currentBid: bidAmount,
-          bidderName: bidderName,
-          bidderNickname: bidderNickname,
-          bidderEmail: bidderEmail
-        });
-
-        const bidsRef = database.ref('fringeAuction/artwork1/bids');
-        bidsRef.push({
-          bidAmount: bidAmount,
-          bidderName: bidderName,
-          bidderNickname: bidderNickname,
-          bidderEmail: bidderEmail,
-          timestamp: Date.now()
-        });
-
-        status.style.display = "block";
-        status.textContent = "✅ Bid placed successfully!";
-      } else if (bidAmount < minBid) {
-        status.style.display = "block";
-        status.textContent = `⚠️ Bid must be at least $${minBid}.`;
-      } else {
-        status.style.display = "block";
-        status.textContent = "⚠️ Bid must be higher than the current bid.";
-      }
-
-      bidForm.reset();
-    });
-  });
+});
 </script>
 </body>
 </html>
