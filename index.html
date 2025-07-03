@@ -150,7 +150,6 @@
     if (storedNickname) document.getElementById('bidderNickname').value = storedNickname;
   });
 
-  // Update countdown and toggle form/leader visibility
   function updateCountdown() {
     const now = new Date();
     let distance, message;
@@ -202,7 +201,6 @@
     const bidIncrement = 10;
     const suggestedBid = currentBid > 0 ? currentBid + bidIncrement : minBid;
 
-    // Auto-fill bid suggestion only if auction is live
     const now = new Date();
     if (now >= auctionStart && now <= auctionEnd) {
       bidAmountInput.value = suggestedBid;
@@ -210,7 +208,6 @@
       bidAmountInput.value = "";
     }
 
-    // Update bid note display
     if (currentBid > 0) {
       bidNote.textContent = `Next minimum bid: $${suggestedBid}`;
     } else {
@@ -227,7 +224,6 @@
     const bidderNickname = document.getElementById('bidderNickname').value.trim() || "Anonymous";
     const bidAmount = parseFloat(bidAmountInput.value);
 
-    // Store user info in localStorage for future autofill
     localStorage.setItem('fringeBidderName', bidderName);
     localStorage.setItem('fringeBidderEmail', bidderEmail);
     localStorage.setItem('fringeBidderNickname', bidderNickname);
@@ -249,7 +245,6 @@
         return;
       }
 
-      // Update bid in database
       artworkRef.update({
         currentBid: bidAmount,
         bidderName: bidderName,
@@ -257,7 +252,6 @@
         bidderEmail: bidderEmail
       });
 
-      // Save bid to bid history
       const bidsRef = database.ref('fringeAuction/artwork1/bids');
       bidsRef.push({
         bidAmount: bidAmount,
@@ -268,33 +262,28 @@
       });
 
       status.textContent = "✅ Bid placed successfully!";
-		
-		// Send bid info to Make webhook
-fetch("https://hook.us2.make.com/c9mrtmlimplh3939hxyl3cdd702qjnr7", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-        bidderName: bidderName,
-        bidderEmail: bidderEmail,
-        bidderNickname: bidderNickname,
-        bidAmount: bidAmount
-    })
-})
-.then(response => console.log("✅ Webhook sent to Make", response))
-.catch(error => console.error("❌ Error sending webhook to Make", error));
+
+      // Send to Make webhook
+      fetch("https://hook.us2.make.com/c9mrtmlimplh3939hxyl3cdd702qjnr7", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+              bidderName: bidderName,
+              bidderEmail: bidderEmail,
+              bidderNickname: bidderNickname,
+              bidAmount: bidAmount
+          })
+      })
+      .then(response => console.log("✅ Webhook sent to Make", response))
+      .catch(error => console.error("❌ Error sending webhook to Make", error));
+
       bidForm.reset();
 
-      // Repopulate fields immediately after reset
       document.getElementById('bidderName').value = bidderName;
       document.getElementById('bidderEmail').value = bidderEmail;
       document.getElementById('bidderNickname').value = bidderNickname;
-      bidAmountInput.value = suggestedBid + bidIncrement;
+      bidAmountInput.value = bidAmount + bidIncrement;
     });
-	  // DEBUG repopulate on load
-console.log("Pre-filling form fields from localStorage...");
-document.getElementById('bidderName').value = localStorage.getItem('fringeBidderName') || '';
-document.getElementById('bidderEmail').value = localStorage.getItem('fringeBidderEmail') || '';
-document.getElementById('bidderNickname').value = localStorage.getItem('fringeBidderNickname') || '';
   });
 </script>
 </body>
