@@ -276,6 +276,11 @@
       document.getElementById('bidderNickname').value = bidderNickname;
       bidAmountInput.value = suggestedBid + bidIncrement;
     });
+	  // DEBUG repopulate on load
+console.log("Pre-filling form fields from localStorage...");
+document.getElementById('bidderName').value = localStorage.getItem('fringeBidderName') || '';
+document.getElementById('bidderEmail').value = localStorage.getItem('fringeBidderEmail') || '';
+document.getElementById('bidderNickname').value = localStorage.getItem('fringeBidderNickname') || '';
   });
 </script>
 </body>
