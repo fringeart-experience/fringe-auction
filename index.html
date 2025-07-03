@@ -22,7 +22,15 @@
     margin-bottom: 5px;
     margin-top: 35px;
     }
-    form {
+    #status {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #C26363; /* Fringe red text */
+    background-color: #FFF3CD; /* soft yellow background for visibility */
+    padding: 10px;
+    border-radius: 5px;
+}
+	 form {
       margin-top: 20px;
       font-size: 18px;
     }
@@ -144,20 +152,27 @@ const auctionEnd = new Date("July 31, 2025 21:00:00");
       message = "Auction ended.";
     }
 
-    if (distance > 0) {
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      countdownElement.textContent = `${message} ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  if (distance > 0) {
+    // auction is active or upcoming
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    countdownElement.textContent = `${message} ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+    if (now < auctionStart) {
+        bidForm.style.display = "none";
+        status.textContent = "⏳ The auction has not started yet. Please check back soon to place your bid!";
     } else {
-      countdownElement.textContent = message;
-      bidForm.style.display = "none";
-      if (now < auctionStart) {
-        status.textContent = "⏳ This auction has not started yet.";
-      } else if (now > auctionEnd) {
-        status.textContent = "❌ This auction has ended. Thank you for your interest!";
-      }
+        bidForm.style.display = "block";
+        status.textContent = ""; // clear warning if auction is live
+    }
+} else {
+    // auction ended
+    countdownElement.textContent = message;
+    bidForm.style.display = "none";
+    status.textContent = "❌ This auction has ended. Thank you for your interest!";
+}
     }
   }
 
