@@ -62,7 +62,7 @@
   <p class="subtitle"><em>In support of Fringe: An Art Experience in downtown Ruston.</em></p>
   
   <p id="countdown" style="text-align:center; padding: 10px 0; font-weight:bold; color:#C26363; font-size:20px;">
-    Loading countdown...
+    Auction begins in:  2d 10h 51m 37s
   </p>
 
   <p class="current-leader-display">
@@ -99,7 +99,7 @@
 <script>
   // Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyBNbWnxf9oIgSt9RYrENAYn0gEaAwC0Jhc",
+    apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
     authDomain: "auctions-fringe12.firebaseapp.com",
     projectId: "auctions-fringe12",
     storageBucket: "auctions-fringe12.firebasestorage.app",
@@ -178,14 +178,27 @@ const auctionEnd = new Date("July 31, 2025 21:00:00");
       const minBid = 100; // Minimum bid
 
       if (bidAmount > currentBid && bidAmount >= minBid) {
-        artworkRef.set({
-          currentBid: bidAmount,
-          bidderName: bidderName,
-          bidderNickname: bidderNickname,
-          bidderEmail: bidderEmail
-        });
-        status.textContent = "✅ Bid placed successfully!";
-      } else if (bidAmount < minBid) {
+    // Update the current highest bid
+    artworkRef.update({
+        currentBid: bidAmount,
+        bidderName: bidderName,
+        bidderNickname: bidderNickname,
+        bidderEmail: bidderEmail
+    });
+
+    // Save bid to the bids history list
+    const bidsRef = database.ref('fringeAuction/artwork1/bids');
+    bidsRef.push({
+        bidAmount: bidAmount,
+        bidderName: bidderName,
+        bidderNickname: bidderNickname,
+        bidderEmail: bidderEmail,
+        timestamp: Date.now()
+    });
+
+    status.textContent = "✅ Bid placed successfully!";
+}
+		else if (bidAmount < minBid) {
         status.textContent = `⚠️ Bid must be at least $${minBid}.`;
       } else {
         status.textContent = "⚠️ Bid must be higher than the current bid.";
