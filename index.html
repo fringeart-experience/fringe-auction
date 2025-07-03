@@ -1,116 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Fringe Auction</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fringe Auction</title>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-<style>
-body {
-  font-family: sans-serif;
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
-  font-size: 20px;
-}
-h1 {
-  color: #085651;
-  font-size: 26px;
-  text-align: center;
-  margin-bottom: 5px;
-  margin-top: 35px;
-}
-#status {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #C26363;
-  background-color: #FFF3CD;
-  padding: 10px;
-  border-radius: 5px;
-  display: none;
-}
-form {
-  margin-top: 20px;
-  font-size: 18px;
-}
-input, button {
-  padding: 8px;
-  margin: 5px 0;
-  width: 100%;
-  box-sizing: border-box;
-  font-size: 20px;
-}
-button {
-  background: #085651;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-button:hover { background: #555; }
-.subtitle {
-  font-size: 16px;
-  text-align: center;
-  margin-top: 2px;
-  margin-bottom: 5px;
-}
-.current-leader-display {
-  color: #C26363;
-  font-weight: bold;
-}
-.note {
-  font-size: 16px;
-  color: #555;
-  text-align: center;
-  margin-bottom: 10px;
-}
-</style>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      font-size: 20px;
+    }
+    h1 {
+      color: #085651;
+      font-size: 26px;
+      text-align: center;
+      margin-bottom: 5px;
+      margin-top: 35px;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #C26363;
+      text-align: center;
+    }
+    form {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 20px;
+    }
+    button {
+      background: #085651;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #555;
+    }
+    .subtitle {
+      font-size: 16px;
+      text-align: center;
+      margin-top: 2px;
+      margin-bottom: 5px;
+    }
+    .current-leader-display {
+      color: #C26363;
+      font-weight: bold;
+      padding-top: 0px;
+      text-align: center;
+    }
+    #bidNote {
+      font-size: 16px;
+      text-align: center;
+      margin: 10px 0;
+      color: #085651;
+    }
+  </style>
 </head>
-
 <body>
-<h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
-<p class="subtitle"><em>In support of Fringe: An Art Experience in downtown Ruston.</em></p>
+  <h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
+  <p class="subtitle"><em>In support of Fringe: An Art Experience in downtown Ruston.</em></p>
 
-<p id="countdown" style="text-align:center; font-weight:bold; color:#C26363; font-size:20px;">
-  Auction begins in: Loading...
-</p>
+  <p id="countdown" style="text-align:center; padding: 10px 0; font-weight:bold; color:#C26363; font-size:20px;">
+    Auction begins in: loading...
+  </p>
 
-<p class="current-leader-display" id="currentLeaderContainer">
-  Current Leader: <span id="currentLeader">Loading...</span> with a bid of $<span id="currentBid">Loading...</span>
-</p>
+  <p class="current-leader-display" id="currentLeaderContainer">
+    Current Leader: <span id="currentLeader">Loading...</span> with a bid of $<span id="currentBid">Loading...</span>
+  </p>
 
-<form id="bidForm">
-  <label><strong>Bidder Name:</strong><br />
-    <input type="text" id="bidderName" required />
-  </label><br />
-  <label><em>Your name will not be released to the public unless permitted.</em></label><br /><br />
+  <form id="bidForm">
+    <label><strong>Bidder Name:</strong><br />
+      <input type="text" id="bidderName" required />
+    </label><br />
+    <label><em>Your name will not be released to the public unless permitted.</em></label><br /><br />
 
-  <label><strong>Bidding Nickname</strong> (optional):<br />
-    <input type="text" id="bidderNickname" />
-  </label><br />
-  <label><em>Nicknames will be displayed next to the current highest bid.</em></label><br /><br />
+    <label><strong>Bidding Nickname</strong> (optional):<br />
+      <input type="text" id="bidderNickname" />
+    </label><br />
+    <label><em>Nicknames will be displayed next to the current highest bid.</em></label><br /><br />
 
-  <label><strong>Bidder Email:</strong><br />
-    <input type="email" id="bidderEmail" required />
-  </label><br />
-  <label><em>Email addresses are only used to contact the bidders about the Auction.</em></label><br /><br />
+    <label><strong>Bidder Email:</strong><br />
+      <input type="email" id="bidderEmail" required />
+    </label><br />
+    <label><em>Email addresses are only used to contact the bidders about the Auction.</em></label><br /><br />
 
-  <label><strong>Bid Amount:</strong></label><br />
-  <span style="display: inline-flex; align-items: center; width: 100%;">
-    <span><strong>$</strong>&nbsp;</span>
-    <input type="number" id="bidAmount" required min="100" step="10" style="flex: 1;" />
-  </span><br />
-  <div id="suggestedBidNote" class="note"></div><br />
+    <label><strong>Bid Amount:</strong></label><br />
+    <span style="display: inline-flex; align-items: center; width: 100%;">
+      <span><strong>$</strong>&nbsp;</span>
+      <input type="number" id="bidAmount" required min="100" step="10" style="flex: 1;" />
+    </span><br />
 
-  <button type="submit">Place Bid</button>
-</form>
+    <p id="bidNote">Loading bidding information...</p>
 
-<p id="status"></p>
+    <button type="submit">Place Bid</button>
+  </form>
+
+  <p id="status"></p>
 
 <script>
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
     authDomain: "auctions-fringe12.firebaseapp.com",
@@ -153,7 +155,6 @@ function updateBidNote(currentBid) {
     }
 }
 
-// Display current bid and set bid note
 artworkRef.on('value', (snapshot) => {
     const data = snapshot.val();
     const currentBid = data ? parseFloat(data.currentBid) : 0;
@@ -162,7 +163,6 @@ artworkRef.on('value', (snapshot) => {
     updateBidNote(currentBid);
 });
 
-// Countdown display
 function updateCountdown() {
     const now = new Date();
     let distance, message;
@@ -192,6 +192,7 @@ function updateCountdown() {
         } else {
             bidForm.style.display = "block";
             leaderContainer.style.display = "block";
+            // retain status until user submits
         }
     } else {
         countdownElement.textContent = message;
@@ -204,7 +205,6 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// Handle bid submission with clear persistent warnings
 bidForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -226,7 +226,6 @@ bidForm.addEventListener('submit', (e) => {
         const requiredBid = currentBid >= minBid ? currentBid + bidIncrement : minBid;
 
         if (bidAmount >= requiredBid) {
-            // Valid bid
             status.textContent = "✅ Bid placed successfully!";
             artworkRef.update({
                 currentBid: bidAmount,
@@ -245,9 +244,8 @@ bidForm.addEventListener('submit', (e) => {
             });
 
             bidForm.reset();
-            updateBidNote(bidAmount); // update suggested bid after successful bid
+            updateBidNote(bidAmount);
         } else {
-            // Invalid bid, show persistent warning
             status.textContent = `⚠️ Your bid must be at least $${requiredBid}. Please enter a higher bid.`;
         }
     });
