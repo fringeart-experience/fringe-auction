@@ -68,15 +68,23 @@
       margin: 10px 0;
       color: #085651;
     }
+  .intro {
+    font-size: 20px;
+    font-size-adjust: inherit;
+}
   </style>
 </head>
 <body>
+  <em><strong><a href="https://www.fringeart.org"><img src="../../Maggie Summer Greens 2025.png" width="600" height="611" alt=""></a></strong></em>
+  
   <h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
-  <p class="subtitle"><em>In support of Fringe: An Art Experience in downtown Ruston.</em></p>
-
-  <p id="countdown" style="text-align:center; padding: 10px 0; font-weight:bold; color:#C26363; font-size:20px;">
-    Auction begins in: loading...
-  </p>
+<p class="intro">&nbsp; Welcome to our online auction of original works of art by our members!&nbsp;This month, we are offering Summer Greens, a 6.5" by 6.5" mixed media painting my Maggie Jones Boudreaux, set on a 2.5" deep cradle wood panel, giving the work a bold off-the wall impression when hung.&nbsp;Bidding starts at $100. &nbsp; &nbsp;</p>
+<p class="intro">&nbsp; This lush, expressive echo of Louisiana’s summer canopy, with vibrant strokes and layered textures, will pull you right to the edge of this dreamy tree line. Don't miss your chance to make this beauty your own!&nbsp; At the end of the auction the winning bidder will acquire the work directly from the artists.</p>
+<p class="subtitle"><em class="intro">All auctions support Fringe: An Art Experience in downtown Ruston.</em></p>
+  <p class="subtitle">&nbsp;</p>
+<p id="countdown" style="text-align:center; padding: 10px 0; font-weight:bold; color:#C26363; font-size:20px;">
+  Auction begins in: loading...
+</p>
 
   <p class="current-leader-display" id="currentLeaderContainer">
     Current Leader: <span id="currentLeader">Loading...</span> with a bid of $<span id="currentBid">Loading...</span>
@@ -136,8 +144,8 @@
   const bidAmountInput = document.getElementById('bidAmount');
   const bidNote = document.getElementById('bidNote');
 
-  const auctionStart = new Date("July 1, 2025 09:00:00");
-  const auctionEnd = new Date("July 31, 2025 21:00:00");
+  const auctionStart = new Date("Auguat 1, 2025 09:00:00");
+  const auctionEnd = new Date("August 31, 2025 21:00:00");
 
   // Repopulate bidder fields from localStorage on load
   window.addEventListener('load', () => {
@@ -261,7 +269,7 @@
         timestamp: Date.now()
       });
 
-      status.textContent = "✅ Bid placed successfully!";
+      status.textContent = "✅ Bid placed successfully! Please check your inbox or spam folder for a confirmation of your bid.";
 
       // Send to Make webhook
       fetch("https://hook.us2.make.com/c9mrtmlimplh3939hxyl3cdd702qjnr7", {
