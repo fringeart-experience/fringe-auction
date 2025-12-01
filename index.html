@@ -4,11 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fringe Auction</title>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
   <style>
     body {
       font-family: sans-serif;
@@ -128,8 +123,10 @@
 
   <p id="status"></p>
 
-<script>
-  // Firebase configuration
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
     authDomain: "auctions-fringe12.firebaseapp.com",
@@ -141,166 +138,50 @@
     databaseURL: "https://auctions-fringe12-default-rtdb.firebaseio.com"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const artworkRef = database.ref('fringeAuction/artwork1');
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-  const currentBidElement = document.getElementById('currentBid');
-  const bidForm = document.getElementById('bidForm');
-  const status = document.getElementById('status');
-  const countdownElement = document.getElementById('countdown');
-  const leaderContainer = document.getElementById('currentLeaderContainer');
-  const bidAmountInput = document.getElementById('bidAmount');
-  const bidNote = document.getElementById('bidNote');
+  const artworkRef = ref(db, 'fringeAuction/artworkDec');
+  const bidsRef = ref(db, 'fringeAuction/artworkDec/bids');
 
-  const auctionStart = new Date("December 1, 2025 09:00:00");
-  const auctionEnd = new Date("December 20, 2025 21:00:00");
+  // Live updating bid display
+  onValue(artworkRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    const currentBid = data.currentBid || 0;
 
-  // Repopulate bidder fields from localStorage on load
-  window.addEventListener('load', () => {
-    const storedName = localStorage.getItem('fringeBidderName');
-    const storedEmail = localStorage.getItem('fringeBidderEmail');
-    const storedNickname = localStorage.getItem('fringeBidderNickname');
+    document.getElementById('currentBid').textContent = currentBid;
+    document.getElementById('currentLeader').textContent = data.bidderNickname || "No bids yet";
 
-    if (storedName) document.getElementById('bidderName').value = storedName;
-    if (storedEmail) document.getElementById('bidderEmail').value = storedEmail;
-    if (storedNickname) document.getElementById('bidderNickname').value = storedNickname;
+    const nextBid = currentBid > 0 ? currentBid + 10 : 100;
+    document.getElementById('bidAmount').value = nextBid;
+    document.getElementById('bidNote').textContent =
+      currentBid ? `Next minimum bid: $${nextBid}` : `Bidding starts at $100`;
   });
 
-  function updateCountdown() {
-    const now = new Date();
-    let distance, message;
-
-    if (now < auctionStart) {
-      distance = auctionStart - now;
-      message = "Auction begins in:";
-    } else if (now >= auctionStart && now <= auctionEnd) {
-      distance = auctionEnd - now;
-      message = "Auction ends in:";
-    } else {
-      distance = 0;
-      message = "Auction ended.";
-    }
-
-    if (distance > 0) {
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      countdownElement.textContent = `${message} ${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-      if (now < auctionStart) {
-        bidForm.style.display = "none";
-        leaderContainer.style.display = "none";
-        status.innerHTML = "<div style='text-align:center;'>⏳ The auction has not started yet.<br>Please check back soon to place your bid!</div>";
-      } else {
-        bidForm.style.display = "block";
-        leaderContainer.style.display = "block";
-      }
-    } else {
-      countdownElement.textContent = message;
-      bidForm.style.display = "none";
-      leaderContainer.style.display = "none";
-      status.textContent = "❌ This auction has ended. Thank you for your interest!";
-    }
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-
-  // Display current bid and auto-suggest next minimum
-  artworkRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    const currentBid = data ? parseFloat(data.currentBid) : 0;
-    currentBidElement.textContent = currentBid > 0 ? currentBid : '0';
-    document.getElementById('currentLeader').textContent = data ? data.bidderNickname : 'No bids yet';
-
-    const minBid = 100;
-    const bidIncrement = 10;
-    const suggestedBid = currentBid > 0 ? currentBid + bidIncrement : minBid;
-
-    const now = new Date();
-    if (now >= auctionStart && now <= auctionEnd) {
-      bidAmountInput.value = suggestedBid;
-    } else {
-      bidAmountInput.value = "";
-    }
-
-    if (currentBid > 0) {
-      bidNote.textContent = `Next minimum bid: $${suggestedBid}`;
-    } else {
-      bidNote.textContent = `Bidding starts at $${minBid}`;
-    }
-  });
-
-  // Handle bid submission
-  bidForm.addEventListener('submit', (e) => {
+  // Handle submissions
+  document.getElementById('bidForm').addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const bidderName = document.getElementById('bidderName').value.trim();
-    const bidderEmail = document.getElementById('bidderEmail').value.trim();
-    const bidderNickname = document.getElementById('bidderNickname').value.trim() || "Anonymous";
-    const bidAmount = parseFloat(bidAmountInput.value);
+    const name = document.getElementById('bidderName').value.trim();
+    const email = document.getElementById('bidderEmail').value.trim();
+    const nickname = document.getElementById('bidderNickname').value.trim() || "Anonymous";
+    const amount = parseFloat(document.getElementById('bidAmount').value);
 
-    localStorage.setItem('fringeBidderName', bidderName);
-    localStorage.setItem('fringeBidderEmail', bidderEmail);
-    localStorage.setItem('fringeBidderNickname', bidderNickname);
-
-    artworkRef.once('value').then((snapshot) => {
-      const data = snapshot.val();
-      const currentBid = data ? parseFloat(data.currentBid) : 0;
-      const minBid = 100;
-      const bidIncrement = 10;
-      const suggestedBid = currentBid > 0 ? currentBid + bidIncrement : minBid;
-
-      if (isNaN(bidAmount)) {
-        status.textContent = "⚠️ Please enter a valid bid amount.";
-        return;
-      }
-
-      if (bidAmount < suggestedBid) {
-        status.textContent = `⚠️ Your bid must be at least $${suggestedBid}. Please enter a higher amount.`;
-        return;
-      }
-
-      artworkRef.update({
-        currentBid: bidAmount,
-        bidderName: bidderName,
-        bidderNickname: bidderNickname,
-        bidderEmail: bidderEmail
-      });
-
-      const bidsRef = database.ref('fringeAuction/artwork1/bids');
-      bidsRef.push({
-        bidAmount: bidAmount,
-        bidderName: bidderName,
-        bidderNickname: bidderNickname,
-        bidderEmail: bidderEmail,
-        timestamp: Date.now()
-      });
-
-      status.textContent = "✅ Bid placed successfully! Please check your inbox or spam folder for a confirmation of your bid.";
-
-      // Send to Make webhook
-      fetch("https://hook.us2.make.com/c9mrtmlimplh3939hxyl3cdd702qjnr7", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-              bidderName: bidderName,
-              bidderEmail: bidderEmail,
-              bidderNickname: bidderNickname,
-              bidAmount: bidAmount
-          })
-      })
-      .then(response => console.log("✅ Webhook sent to Make", response))
-      .catch(error => console.error("❌ Error sending webhook to Make", error));
-
-      bidForm.reset();
-
-      document.getElementById('bidderName').value = bidderName;
-      document.getElementById('bidderEmail').value = bidderEmail;
-      document.getElementById('bidderNickname').value = bidderNickname;
-      bidAmountInput.value = bidAmount + bidIncrement;
+    update(artworkRef, {
+      currentBid: amount,
+      bidderName: name,
+      bidderNickname: nickname,
+      bidderEmail: email,
     });
+    push(bidsRef, {
+      bidAmount: amount,
+      bidderName: name,
+      bidderNickname: nickname,
+      bidderEmail: email,
+      timestamp: Date.now()
+    });
+
+    document.getElementById('status').textContent = "✔ Bid submitted successfully!";
   });
 </script>
 </body>
