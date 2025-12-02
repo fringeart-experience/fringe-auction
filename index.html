@@ -157,6 +157,14 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+	// Write auction metadata to Firebase (runs on page load)
+const metaRef = ref(db, 'fringeAuction/artwork1/meta');
+
+update(metaRef, {
+  start: window.auctionData.start,
+  end: window.auctionData.end,
+  auctionId: window.auctionData.id
+});
 
   const artworkRef = ref(db, 'fringeAuction/artwork1');
   const bidsRef = ref(db, 'fringeAuction/artwork1/bids');
