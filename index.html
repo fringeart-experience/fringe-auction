@@ -122,7 +122,24 @@
   </form>
 
   <p id="status"></p>
-
+	
+  <!-- Hidden auction metadata -->
+  <div id="auction-meta"
+       data-start="2025-12-01T09:00:00-06:00"
+       data-end="2025-12-20T21:00:00-06:00"
+       data-auction-id="ornamentsDec2025"
+       style="display:none;">
+  </div>
+	
+	<script>
+  const auctionMeta = document.getElementById('auction-meta');
+  window.auctionData = {
+    start: auctionMeta.dataset.start,
+    end: auctionMeta.dataset.end,
+    id: auctionMeta.dataset.auctionId
+  };
+</script>
+	
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
   import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
