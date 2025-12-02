@@ -132,6 +132,42 @@
   </div>
 	
 	<script>
+  const meta = document.getElementById("auction-meta");
+  const startTime = new Date(meta.dataset.start).getTime();
+  const endTime = new Date(meta.dataset.end).getTime();
+  const countdownEl = document.getElementById("countdown");
+
+  function updateCountdown() {
+    const now = Date.now();
+
+    if (now < startTime) {
+      const diff = startTime - now;
+      countdownEl.textContent = "Auction begins in: " + formatTime(diff);
+    } else if (now >= startTime && now < endTime) {
+      const diff = endTime - now;
+      countdownEl.textContent = "Auction ends in: " + formatTime(diff);
+    } else {
+      countdownEl.textContent = "Auction has ended.";
+    }
+  }
+
+  function formatTime(ms) {
+    let totalSeconds = Math.floor(ms / 1000);
+    let days = Math.floor(totalSeconds / 86400);
+    totalSeconds %= 86400;
+    let hours = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  setInterval(updateCountdown, 1000);
+  updateCountdown(); // run immediately
+</script>
+	
+	<script>
   const auctionMeta = document.getElementById('auction-meta');
   window.auctionData = {
     start: auctionMeta.dataset.start,
