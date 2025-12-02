@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fringe Auction</title>
+
   <style>
     body {
       font-family: sans-serif;
@@ -12,12 +13,12 @@
       margin: auto;
       font-size: 20px;
     }
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-  }
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
     h1 {
       color: #085651;
       font-size: 26px;
@@ -60,7 +61,6 @@
     .current-leader-display {
       color: #C26363;
       font-weight: bold;
-      padding-top: 0px;
       text-align: center;
     }
     #bidNote {
@@ -69,52 +69,54 @@
       margin: 10px 0;
       color: #085651;
     }
-  .intro {
-    font-size: 20px;
-    font-size-adjust: inherit;
-}
+    .intro {
+      font-size: 20px;
+    }
   </style>
 </head>
-<body>
-  <em><strong><a href="https://www.fringeart.org"><img src="Dec2025_SteedDonatedOrnaments.jpeg" width="3024" height="3024" alt=""></a></strong></em>
-  
-  <h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
-<p class="intro">&nbsp;             &nbsp;This month's featured auction item is a curated collection of five handmade ornaments by Fringe member artists <a href="https://www.fringeart.org/maggieboudreaux">Maggie Boudreaux</a>, <a href="https://www.fringeart.org/shellynealy">Shelly Nealy</a>, and <a href="https://www.fringeart.org/emilypullin">Emily Pullin</a>.</p>
-<p class="intro">&nbsp; &nbsp;This playful, artful and ready-to-hang collection donated by member artist Lynda Steed is ready to shine on your tree, wreaths, or any other holiday display!</p>
-<p class="intro">&nbsp; &nbsp;This group is perfect for gifting, or keeping! Especially with the auction date ending on December 20th, just in time to bring these beauties home for Christmas.&nbsp; &nbsp;</p>
-  <p class="intro">&nbsp;</p>
-<p class="subtitle"><em class="intro">All auctions support Fringe: An Art Experience.</em></p>
-<p class="subtitle"><em><a href="https://www.fringeart.org">Click here to return to the Fringe website.&nbsp;&nbsp;</a></em></p>
-<p class="subtitle">&nbsp;</p>
-<p id="countdown" style="text-align:center; padding: 10px 0; font-weight:bold; color:#C26363; font-size:20px;">
-  Auction begins in: loading...
-</p>
 
+<body>
+
+  <a href="https://www.fringeart.org">
+    <img src="Dec2025_SteedDonatedOrnaments.jpeg" width="3024" height="3024" alt="">
+  </a>
+
+  <h1><strong>12 ARTISTS - 12 AUCTIONS - 12 ARTWORKS</strong></h1>
+
+  <p class="intro">This month's featured auction item is a curated collection of five handmade ornaments by Fringe member artists 
+    <a href="https://www.fringeart.org/maggieboudreaux">Maggie Boudreaux</a>,
+    <a href="https://www.fringeart.org/shellynealy">Shelly Nealy</a>, and
+    <a href="https://www.fringeart.org/emilypullin">Emily Pullin</a>.
+  </p>
+
+  <p id="countdown" style="text-align:center; padding: 10px 0; font-weight:bold; color:#C26363; font-size:20px;">
+    Auction begins in: loading...
+  </p>
+
+  <!-- Current Leader -->
   <p class="current-leader-display" id="currentLeaderContainer">
     Current Leader: <span id="currentLeader">Loading...</span> with a bid of $<span id="currentBid">Loading...</span>
   </p>
 
+  <!-- Bid Form -->
   <form id="bidForm">
-    <label><strong>Bidder Name:</strong><br />
+    <label><strong>Bidder Name:</strong>
       <input type="text" id="bidderName" required />
-    </label><br />
-    <label><em>Your name will not be released to the public unless permitted.</em></label><br /><br />
+    </label>
 
-    <label><strong>Bidding Nickname</strong> (optional):<br />
+    <label><strong>Bidding Nickname (optional):</strong>
       <input type="text" id="bidderNickname" />
-    </label><br />
-    <label><em>Nicknames will be displayed next to the current highest bid.</em></label><br /><br />
+    </label>
 
-    <label><strong>Bidder Email:</strong><br />
+    <label><strong>Bidder Email:</strong>
       <input type="email" id="bidderEmail" required />
-    </label><br />
-    <label><em>Email addresses are only used to contact the bidders about the Auction.</em></label><br /><br />
+    </label>
 
-    <label><strong>Bid Amount:</strong></label><br />
+    <label><strong>Bid Amount:</strong></label>
     <span style="display: inline-flex; align-items: center; width: 100%;">
       <span><strong>$</strong>&nbsp;</span>
-      <input type="number" id="bidAmount" required min="100" step="10" style="flex: 1;" />
-    </span><br />
+      <input type="number" id="bidAmount" required min="100" step="10" style="flex:1;" />
+    </span>
 
     <p id="bidNote">Loading bidding information...</p>
 
@@ -122,128 +124,121 @@
   </form>
 
   <p id="status"></p>
-	
-  <!-- Hidden auction metadata -->
+
+  <!-- Hidden Auction Metadata -->
   <div id="auction-meta"
        data-start="2025-12-01T09:00:00-06:00"
        data-end="2025-12-20T21:00:00-06:00"
        data-auction-id="ornamentsDec2025"
-       style="display:none;">
-  </div>
-	
-	<script>
-  const meta = document.getElementById("auction-meta");
-  const startTime = new Date(meta.dataset.start).getTime();
-  const endTime = new Date(meta.dataset.end).getTime();
-  const countdownEl = document.getElementById("countdown");
+       style="display:none;"></div>
 
-  function updateCountdown() {
-    const now = Date.now();
+  <!-- Countdown Script -->
+  <script>
+    const meta = document.getElementById("auction-meta");
+    const startTime = new Date(meta.dataset.start).getTime();
+    const endTime = new Date(meta.dataset.end).getTime();
+    const countdownEl = document.getElementById("countdown");
 
-    if (now < startTime) {
-      const diff = startTime - now;
-      countdownEl.textContent = "Auction begins in: " + formatTime(diff);
-    } else if (now >= startTime && now < endTime) {
-      const diff = endTime - now;
-      countdownEl.textContent = "Auction ends in: " + formatTime(diff);
-    } else {
-      countdownEl.textContent = "Auction has ended.";
+    function formatTime(ms) {
+      let s = Math.floor(ms / 1000);
+      let d = Math.floor(s / 86400);
+      s %= 86400;
+      let h = Math.floor(s / 3600);
+      s %= 3600;
+      let m = Math.floor(s / 60);
+      s %= 60;
+      return `${d}d ${h}h ${m}m ${s}s`;
     }
-  }
 
-  function formatTime(ms) {
-    let totalSeconds = Math.floor(ms / 1000);
-    let days = Math.floor(totalSeconds / 86400);
-    totalSeconds %= 86400;
-    let hours = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    let minutes = Math.floor(totalSeconds / 60);
-    let seconds = totalSeconds % 60;
+    function updateCountdown() {
+      const now = Date.now();
+      if (now < startTime) {
+        countdownEl.textContent = "Auction begins in: " + formatTime(startTime - now);
+      } else if (now < endTime) {
+        countdownEl.textContent = "Auction ends in: " + formatTime(endTime - now);
+      } else {
+        countdownEl.textContent = "Auction has ended.";
+      }
+    }
 
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
 
-  setInterval(updateCountdown, 1000);
-  updateCountdown(); // run immediately
-</script>
-	
-	<script>
-  const auctionMeta = document.getElementById('auction-meta');
-  window.auctionData = {
-    start: auctionMeta.dataset.start,
-    end: auctionMeta.dataset.end,
-    id: auctionMeta.dataset.auctionId
-  };
-</script>
-	
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-  import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+  <!-- Firebase + Auction Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getDatabase, ref, onValue, push, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
-    authDomain: "auctions-fringe12.firebaseapp.com",
-    projectId: "auctions-fringe12",
-    storageBucket: "auctions-fringe12.firebasestorage.app",
-    messagingSenderId: "534345798049",
-    appId: "1:534345798049:web:4d71d0f4a6c18782847be0",
-    measurementId: "G-4ZB48GFTNN",
-    databaseURL: "https://auctions-fringe12-default-rtdb.firebaseio.com"
-  };
+    window.addEventListener("DOMContentLoaded", () => {
+      const firebaseConfig = {
+        apiKey: "AIzaSyBTmrFoE2kyAFvZVqkhhuJaOFCXBbRq-8M",
+        authDomain: "auctions-fringe12.firebaseapp.com",
+        projectId: "auctions-fringe12",
+        storageBucket: "auctions-fringe12.firebasestorage.app",
+        messagingSenderId: "534345798049",
+        appId: "1:534345798049:web:4d71d0f4a6c18782847be0",
+        measurementId: "G-4ZB48GFTNN",
+        databaseURL: "https://auctions-fringe12-default-rtdb.firebaseio.com"
+      };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-	// Write auction metadata to Firebase (runs on page load)
-const metaRef = ref(db, 'fringeAuction/artwork1/meta');
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
 
-update(metaRef, {
-  start: window.auctionData.start,
-  end: window.auctionData.end,
-  auctionId: window.auctionData.id
-});
+      const artworkRef = ref(db, 'fringeAuction/artwork1');
+      const bidsRef = ref(db, 'fringeAuction/artwork1/bids');
 
-  const artworkRef = ref(db, 'fringeAuction/artwork1');
-  const bidsRef = ref(db, 'fringeAuction/artwork1/bids');
+      // Write metadata (this is safe)
+      const metaRef = ref(db, 'fringeAuction/artwork1/meta');
+      update(metaRef, {
+        start: meta.dataset.start,
+        end: meta.dataset.end,
+        auctionId: meta.dataset.auctionId
+      });
 
-  // Live updating bid display
-  onValue(artworkRef, (snapshot) => {
-    const data = snapshot.val() || {};
-    const currentBid = data.currentBid || 0;
+      // Live Updating Display
+      onValue(artworkRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const currentBid = data.currentBid || 0;
 
-    document.getElementById('currentBid').textContent = currentBid;
-    document.getElementById('currentLeader').textContent = data.bidderNickname || "No bids yet";
+        document.getElementById('currentBid').textContent = currentBid;
+        document.getElementById('currentLeader').textContent = data.bidderNickname || "No bids yet";
 
-    const nextBid = currentBid > 0 ? currentBid + 10 : 100;
-    document.getElementById('bidAmount').value = nextBid;
-    document.getElementById('bidNote').textContent =
-      currentBid ? `Next minimum bid: $${nextBid}` : `Bidding starts at $100`;
-  });
+        const nextBid = currentBid > 0 ? currentBid + 10 : 100;
+        document.getElementById('bidAmount').value = nextBid;
+        document.getElementById('bidNote').textContent =
+          currentBid ? `Next minimum bid: $${nextBid}` : `Bidding starts at $100`;
+      });
 
-  // Handle submissions
-  document.getElementById('bidForm').addEventListener('submit', (e) => {
-    e.preventDefault();
+      // Handle Form Submit
+      document.getElementById('bidForm').addEventListener('submit', (e) => {
+        e.preventDefault();
 
-    const name = document.getElementById('bidderName').value.trim();
-    const email = document.getElementById('bidderEmail').value.trim();
-    const nickname = document.getElementById('bidderNickname').value.trim() || "Anonymous";
-    const amount = parseFloat(document.getElementById('bidAmount').value);
+        const name = document.getElementById('bidderName').value.trim();
+        const email = document.getElementById('bidderEmail').value.trim();
+        const nickname = document.getElementById('bidderNickname').value.trim() || "Anonymous";
+        const amount = parseFloat(document.getElementById('bidAmount').value);
 
-    update(artworkRef, {
-      currentBid: amount,
-      bidderName: name,
-      bidderNickname: nickname,
-      bidderEmail: email,
+        update(artworkRef, {
+          currentBid: amount,
+          bidderName: name,
+          bidderNickname: nickname,
+          bidderEmail: email,
+        });
+
+        push(bidsRef, {
+          bidAmount: amount,
+          bidderName: name,
+          bidderNickname: nickname,
+          bidderEmail: email,
+          timestamp: Date.now()
+        });
+
+        document.getElementById('status').textContent = "✔ Bid submitted successfully!";
+      });
+
     });
-    push(bidsRef, {
-      bidAmount: amount,
-      bidderName: name,
-      bidderNickname: nickname,
-      bidderEmail: email,
-      timestamp: Date.now()
-    });
+  </script>
 
-    document.getElementById('status').textContent = "✔ Bid submitted successfully!";
-  });
-</script>
 </body>
 </html>
